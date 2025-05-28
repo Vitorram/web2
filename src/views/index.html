@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Demo MVC</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    input, button { margin: 0.5rem 0; padding: 0.5rem; }
+    ul { list-style-type: none; padding: 0; }
+    li { margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Usuários</h1>
+  <ul id="user-list"></ul>
+  <form id="user-form">
+    <input name="name" placeholder="Nome" required />
+    <input name="email" placeholder="Email" type="email" required />
+    <button type="submit">Criar Usuário</button>
+  </form>
+
+  <script>
+    const apiUrl = '/users';
+
+    async function loadUsers() {
+      try {
+        const res = await fetch(apiUrl);
+        const users = await res.json();
+        const list = document.getElementById('user-list');
+        list.innerHTML = '';
+        users.forEach(u => {
+          const li = document.createElement('li');
+          li.textContent = `${u.id} - ${u.name} (${u.email})`;
+          list.appendChild(li);
+        });
+      } catch (err) {
+        console.error('Erro ao carregar usuários:', err);
+      }
+    }
+
+    document.getElementById('user-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const form = e.target;
+      const data = { name: form.name.value, email: form.email.value };
+      try {
+        await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        form.reset();
+        loadUsers();
+      } catch (err) {
+        console.error('Erro ao criar usuário:', err);
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', loadUsers);
+  </script>
+</body>
+</html>
