@@ -4,17 +4,19 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL") 
+  url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+model Usuario {
+  id      Int      @id @default(autoincrement())
+  nome    String
+  email   String   @unique
+  carros  Carro[]  @relation("UsuariosCarros")
 }
 
-model Product {
-  id    Int     @id @default(autoincrement())
-  name  String
-  price Float
+model Carro {
+  id       Int       @id @default(autoincrement())
+  modelo   String
+  preco    Float
+  usuarios Usuario[] @relation("UsuariosCarros")
 }

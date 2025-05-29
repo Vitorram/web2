@@ -1,18 +1,14 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const app = express();
+import express from 'express'
+import usuarioRoutes from './routes/usuarioRoutes.js'
+import carroRoutes from './routes/carroRoutes.js'
+import cors from 'cors'
 
-const userRoutes = require('./routes/userRoutes');
-const productRoutes = require('./routes/productRoutes');
+const app = express()
+app.use(cors())
+app.use(express.json())
 
-app.use(cors());
-app.use(bodyParser.json());
+app.use('/usuarios', usuarioRoutes)
+app.use('/carros', carroRoutes)
 
-app.use('/users', userRoutes);
-app.use('/products', productRoutes);
+app.listen(3000, () => console.log('Servidor rodando na porta 3000'))
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
