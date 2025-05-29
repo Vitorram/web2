@@ -34,5 +34,4 @@ git clone https://github.com/Vitorram/web2.git
 cd web2
 
 
-Se precisar, posso ajudar a deixar ele mais detalhado! Quer?
 
