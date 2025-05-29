@@ -1,18 +1,20 @@
-import express from 'express'
+// src/routes/carro.routes.js
+import { Router } from 'express';
 import {
-  getCarros,
   createCarro,
+  getCarros,
+  getCarroById,
   updateCarro,
-  deleteCarro,
-  vincularUsuario
-} from '../controllers/carroController.js'
+  deleteCarro
+} from '../controllers/carroController.js';
 
-const router = express.Router()
+const router = Router();
 
-router.get('/', getCarros)
-router.post('/', createCarro)
-router.put('/:id', updateCarro)
-router.delete('/:id', deleteCarro)
-router.post('/vincular-usuario', vincularUsuario)
+// /api/carros
+router.post('/', createCarro);
+router.get('/', getCarros);
+router.get('/:id', getCarroById);
+router.put('/:id', updateCarro);
+router.delete('/:id', deleteCarro);
 
-export default router
+export default router;

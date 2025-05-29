@@ -8,15 +8,17 @@ datasource db {
 }
 
 model Usuario {
-  id      Int      @id @default(autoincrement())
-  nome    String
-  email   String   @unique
-  carros  Carro[]  @relation("UsuariosCarros")
+  id     Int     @id @default(autoincrement())
+  nome   String
+  email  String  @unique
+  carros Carro[]
 }
 
 model Carro {
-  id       Int       @id @default(autoincrement())
-  modelo   String
-  preco    Float
-  usuarios Usuario[] @relation("UsuariosCarros")
+  id        Int     @id @default(autoincrement())
+  modelo    String
+  preco     Float
+  ano       Int
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
 }

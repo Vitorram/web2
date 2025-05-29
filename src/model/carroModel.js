@@ -1,31 +1,35 @@
-import * as carroModel from '../models/carroModel.js'
+import prisma from '../prismaClient.js';
 
-export const getCarros = async (req, res) => {
-  const carros = await carroModel.getTodosCarros();
-  res.json(carros);
-};
+export async function createCarro(data) {
+  // data: { modelo, preco, ano, usuarioId }
+  return await prisma.carro.create({ data });
+}
 
-export const createCarro = async (req, res) => {
-  const { modelo, preco } = req.body;
-  const novoCarro = await carroModel.criarCarro({ modelo, preco });
-  res.json(novoCarro);
-};
+export async function getCarros() {
+  return await prisma.carro.findMany({
+    include: {
+      usuario: {
+        select: {
+          id: true,
+          nome: true,
+          email: true
+        }
+      }
+    }
+  });
+}
 
-export const updateCarro = async (req, res) => {
-  const { id } = req.params;
-  const { modelo, preco } = req.body;
-  const carroAtualizado = await carroModel.atualizarCarro(id, { modelo, preco });
-  res.json(carroAtualizado);
-};
-
-export const deleteCarro = async (req, res) => {
-  const { id } = req.params;
-  await carroModel.deletarCarro(id);
-  res.json({ message: "Carro deletado" });
-};
-
-export const vincularUsuario = async (req, res) => {
-  const { carroId, usuarioId } = req.body;
-  const resultado = await carroModel.adicionarUsuarioAoCarro(carroId, usuarioId);
-  res.json(resultado);
-};
+export async function getCarroById(id) {
+  return await prisma.carro.findUnique({
+    where: { id: Number(id) },
+    include: {
+      usuario: {
+        select: {
+          id: true,
+          nome: true,
+          email: true
+        }
+      }
+    }
+  });
+}

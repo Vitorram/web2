@@ -1,18 +1,18 @@
-import express from 'express'
+import express from "express";
 import {
-  getUsuarios,
-  createUsuario,
-  updateUsuario,
-  deleteUsuario,
-  vincularCarro
-} from '../controllers/usuarioController.js'
+  createUsuarioController,
+  getUsuariosController,
+  getUsuarioByIdController,
+  updateUsuarioController,
+  deleteUsuarioController,
+} from "../controllers/usuarioController.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', getUsuarios)
-router.post('/', createUsuario)
-router.put('/:id', updateUsuario)
-router.delete('/:id', deleteUsuario)
-router.post('/vincular-carro', vincularCarro)
+router.get("/", getUsuariosController);
+router.get("/:id", getUsuarioByIdController);
+router.post("/", createUsuarioController);
+router.put("/:id", updateUsuarioController);
+router.delete("/:id", deleteUsuarioController);
 
-export default router
+export default router;

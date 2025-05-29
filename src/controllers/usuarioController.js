@@ -1,28 +1,88 @@
-import prisma from '../prismaClient.js'
+import {
+  createUsuario,
+  getUsuarios,
+  getUsuarioById,
+  updateUsuario,
+  deleteUsuario,
+} from "../model/usuarioModel.js";
 
-export const getUsuarios = async (req, res) => {
-  const usuarios = await prisma.usuario.findMany({ include: { carros: true } });
-  res.json(usuarios);
-};
+export async function getUsuariosController(req, res, next) {
+  try {
+    const usuarios = await getUsuarios();
+    res.json(usuarios);
+  } catch (error) {
+    next(error);
+  }
+}
 
-export const createUsuario = async (req, res) => {
-  const { nome, email } = req.body;
-  const novoUsuario = await prisma.usuario.create({ data: { nome, email } });
-  res.json(novoUsuario);
-};
+export async function getUsuarioByIdController(req, res, next) {
+  try {
+    const { id } = req.params;
+    const usuario = await getUsuarioById(id);
 
-export const updateUsuario = async (req, res) => {
-  const { id } = req.params;
-  const { nome, email } = req.body;
-  const usuarioAtualizado = await prisma.usuario.update({
-    where: { id: parseInt(id) },
-    data: { nome, email },
-  });
-  res.json(usuarioAtualizado);
-};
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
 
-export const deleteUsuario = async (req, res) => {
-  const { id } = req.params;
-  await prisma.usuario.delete({ where: { id: parseInt(id) } });
-  res.json({ message: "Usuário deletado" });
-};
+    res.json(usuario);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function createUsuarioController(req, res, next) {
+  try {
+    const { nome, email } = req.body;
+
+    if (!nome || !email) {
+      return res.status(400).json({
+        message: "Nome e e-mail são obrigatórios.",
+      });
+    }
+
+    const usuario = await createUsuario({ nome, email });
+
+    res.status(201).json({
+      message: "Usuário criado com sucesso!",
+      usuario,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateUsuarioController(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { nome, email } = req.body;
+
+    if (!nome || !email) {
+      return res.status(400).json({
+        message: "Nome e e-mail são obrigatórios.",
+      });
+    }
+
+    const usuario = await updateUsuario(id, { nome, email });
+
+    res.json({
+      message: "Usuário atualizado com sucesso!",
+      usuario,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteUsuarioController(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    await deleteUsuario(id);
+
+    res.json({
+      message: "Usuário deletado com sucesso!",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
