@@ -1,24 +1,38 @@
-# Node Express Prisma MVC API
+# API de Usuários e Carros
 
-Este projeto é uma API RESTful construída com Node.js, Express e Prisma ORM, usando MySQL como banco de dados. Segue o padrão MVC (Model-View-Controller) e inclui recursos básicos de CRUD para Usuários e Posts, além de um frontend estático minimalista.
+## Sobre
 
-### Funcionalidades
+API REST para gerenciar usuários e os carros que eles podem comprar, feita em Node.js com Express, MySQL e Prisma ORM.
 
-- **Users** (CRUD completo)
-- **Posts** (CRUD completo, com relação ao autor)
-- Conexão e migrações via Prisma
-- Estrutura organizada em Models, Controllers e Routes
-- Frontend básico para criação e listagem de Usuários (HTML/JS)
+---
 
-### Pré-requisitos
+## Funcionalidades
 
-- Node.js >= 14
-- MySQL (acesso e privilégios para criar banco)
+- CRUD de Usuários
+- CRUD de Carros vinculados a usuários
+- Validação básica dos dados
+- Relacionamento entre usuários e carros
 
-### Instalação
+---
 
-1. Clone este repositório:
-   ```bash
-   git clone <url-do-repositorio>
-   npm install
-   node src/server.js
+## Tecnologias usadas
+
+- Node.js
+- Express
+- Prisma ORM
+- MySQL
+- dotenv
+
+---
+
+## Como rodar o projeto
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/Vitorram/web2.git
+cd web2
+
+
+Se precisar, posso ajudar a deixar ele mais detalhado! Quer?
+
