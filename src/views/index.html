@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard Financeiro</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --sidebar-bg: #1e3a8a;
@@ -196,6 +197,22 @@
       margin-top: 0.3rem;
     }
 
+    #btn-relatorio {
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      transition: background 0.3s;
+    }
+    #btn-relatorio:hover {
+      background: var(--accent-blue-hover);
+    }
+
     ul::-webkit-scrollbar {
       width: 8px;
     }
@@ -210,7 +227,8 @@
 </head>
 <body>
   <aside class="sidebar">
-    <h2>Vitor R.</h2>
+    <h2>Vitor ramos</h2>
+    <br>
     <nav>
       <a href="#">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -257,6 +275,7 @@
 
       <section id="transactions-section">
         <h2>Transações</h2>
+        <button id="btn-relatorio">Gerar Relatório PDF</button>
         <ul id="lista-transacoes"></ul>
         <form id="form-transacao">
           <label for="descricaoTransacao">Descrição:</label>
@@ -320,6 +339,7 @@
         listaTx.innerHTML = '';
         let totalIncome = 0;
         let totalExpense = 0;
+        window._transactionsCache = transacoes; 
         transacoes.forEach(tx => {
           const li = document.createElement('li');
           li.textContent = `ID: ${tx.id} | ${tx.title} - ${formatarMoeda(tx.amount)} | Tipo: ${tx.type} | Categoria ID: ${tx.categoryId}`;
@@ -380,6 +400,34 @@
       } catch (err) {
         document.getElementById('errorTransacao').textContent = err.message;
       }
+    });
+
+    document.getElementById('btn-relatorio').addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const transacoes = window._transactionsCache || [];
+      const marginLeft = 20;
+      let cursorY = 20;
+
+      doc.setFontSize(16);
+      doc.text('Relatório de Transações', marginLeft, cursorY);
+      cursorY += 10;
+
+      doc.setFontSize(10);
+      doc.text('ID | Descrição | Valor | Tipo | CategoriaID', marginLeft, cursorY);
+      cursorY += 6;
+
+      transacoes.forEach((tx, index) => {
+        if (cursorY > 280) {
+          doc.addPage();
+          cursorY = 20;
+        }
+        const line = `${tx.id} | ${tx.title} | ${formatarMoeda(tx.amount)} | ${tx.type} | ${tx.categoryId}`;
+        doc.text(line, marginLeft, cursorY);
+        cursorY += 6;
+      });
+
+      doc.save('relatorio-transacoes.pdf');
     });
 
     carregarCategorias();
