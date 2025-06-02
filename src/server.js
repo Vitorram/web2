@@ -1,20 +1,30 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import cors from 'cors';
-import usuarioRoutes from './routes/usuarioRoutes.js';
-import carroRoutes from './routes/carroRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+import transactionRoutes from './routes/transactionRoutes.js';
+
+dotenv.config();
 
 const app = express();
-const port = 3000
-// Middlewares
-app.use(cors());
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
+app.use(cors());
 
 // Rotas
-app.use('/usuarios', usuarioRoutes);
-app.use('/carros', carroRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/transactions', transactionRoutes);
 
-// Inicializa servidor
-const PORT = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`)
-})
+app.get('/', (req, res) => {
+  res.send('API de Finanças está rodando! ✅');
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Algo deu errado no servidor!' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
+});

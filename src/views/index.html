@@ -1,112 +1,232 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carros à Venda</title>
+  <meta charset="UTF-8" />
+  <title>Dashboard Financeiro</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
+      margin: 20px;
+      background: #f0f2f5;
     }
-    header {
-      background-color: #c00;
-      color: #fff;
-      padding: 1rem;
+    h1 {
       text-align: center;
+      margin-bottom: 30px;
     }
-    main {
-      padding: 2rem;
-      max-width: 1000px;
-      margin: auto;
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      background: #e7e9ee;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 4px;
     }
     form {
-      background: #fff;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-top: 15px;
     }
-    form input {
-      margin-bottom: 1rem;
+    label {
       display: block;
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+      margin-top: 10px;
     }
-    form button {
-      padding: 0.7rem 1.2rem;
-      background-color: #c00;
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
       border: none;
-      color: #fff;
       border-radius: 4px;
       cursor: pointer;
     }
-    .carro-lista {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1rem;
+    button:hover {
+      background-color: #0056b3;
     }
-    .carro {
-      background: #fff;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .carro h3 {
-      margin: 0 0 0.5rem;
+    .error {
+      color: red;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Carros à Venda</h1>
-  </header>
-  <main>
-    <form id="carro-form">
-      <h2>Adicionar Carro</h2>
-      <input type="text" id="modelo" placeholder="Modelo" required>
-      <input type="number" id="preco" placeholder="Preço" required>
-      <button type="submit">Cadastrar</button>
-    </form>
 
-    <section class="carro-lista" id="carros"></section>
-  </main>
+  <h1>Dashboard Financeiro</h1>
+  <div class="container">
+
+    <!-- Seção Categorias -->
+    <section id="categories-section">
+      <h2>Categorias</h2>
+      <ul id="lista-categorias"></ul>
+
+      <form id="form-categoria">
+        <h3>Adicionar Categoria</h3>
+        <label for="nomeCategoria">Nome da Categoria:</label>
+        <input type="text" id="nomeCategoria" name="nomeCategoria" required />
+        <button type="submit">Adicionar</button>
+        <div class="error" id="errorCategoria"></div>
+      </form>
+    </section>
+
+    <!-- Seção Transações -->
+    <section id="transactions-section">
+      <h2>Transações</h2>
+      <ul id="lista-transacoes"></ul>
+
+      <form id="form-transacao">
+        <h3>Adicionar Transação</h3>
+        <label for="descricaoTransacao">Descrição:</label>
+        <input type="text" id="descricaoTransacao" name="descricaoTransacao" required />
+
+        <label for="valorTransacao">Valor:</label>
+        <input type="number" step="0.01" id="valorTransacao" name="valorTransacao" required />
+
+        <label for="tipoTransacao">Tipo:</label>
+        <select id="tipoTransacao" name="tipoTransacao" required>
+          <option value="income">Entrada</option>
+          <option value="expense">Saída</option>
+        </select>
+
+        <label for="categoriaTransacao">Categoria:</label>
+        <select id="categoriaTransacao" name="categoriaTransacao" required></select>
+
+        <button type="submit">Adicionar</button>
+        <div class="error" id="errorTransacao"></div>
+      </form>
+    </section>
+
+  </div>
 
   <script>
-    async function carregarCarros() {
-      const resposta = await fetch("http://localhost:3000/carros");
-      const carros = await resposta.json();
+    const API_URL = 'http://localhost:3000';
 
-      const container = document.getElementById("carros");
-      container.innerHTML = "";
-      carros.forEach(carro => {
-        const div = document.createElement("div");
-        div.className = "carro";
-        div.innerHTML = `<h3>${carro.modelo}</h3><p>Preço: R$ ${carro.preco.toFixed(2)}</p>`;
-        container.appendChild(div);
-      });
+    // Função para carregar categorias da API
+    async function carregarCategorias() {
+      try {
+        const res = await fetch(`${API_URL}/categories`);
+        if (!res.ok) throw new Error('Erro ao buscar categorias');
+        const categorias = await res.json();
+
+        const lista = document.getElementById('lista-categorias');
+        lista.innerHTML = '';
+        categorias.forEach(cat => {
+          const li = document.createElement('li');
+          li.textContent = `${cat.id} - ${cat.name}`;
+          lista.appendChild(li);
+        });
+
+        const select = document.getElementById('categoriaTransacao');
+        select.innerHTML = '';
+        categorias.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id;
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+      } catch (err) {
+        document.getElementById('errorCategoria').textContent = err.message;
+      }
     }
 
-    document.getElementById("carro-form").addEventListener("submit", async (e) => {
+    // Função para carregar transações da API
+    async function carregarTransacoes() {
+      try {
+        const res = await fetch(`${API_URL}/transactions`);
+        if (!res.ok) throw new Error('Erro ao buscar transações');
+        const transacoes = await res.json();
+
+        const lista = document.getElementById('lista-transacoes');
+        lista.innerHTML = '';
+        transacoes.forEach(tx => {
+          const li = document.createElement('li');
+          li.textContent = `ID: ${tx.id} | ${tx.title} - R$${tx.amount.toFixed(2)} | Tipo: ${tx.type} | Categoria ID: ${tx.categoryId}`;
+          lista.appendChild(li);
+        });
+      } catch (err) {
+        document.getElementById('errorTransacao').textContent = err.message;
+      }
+    }
+
+    // Adicionar categoria
+    document.getElementById('form-categoria').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const modelo = document.getElementById("modelo").value;
-      const preco = parseFloat(document.getElementById("preco").value);
-
-      await fetch("http://localhost:3000/carros", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ modelo, preco })
-      });
-
-      e.target.reset();
-      carregarCarros();
+      const nome = document.getElementById('nomeCategoria').value.trim();
+      if (!nome) {
+        document.getElementById('errorCategoria').textContent = 'Nome da categoria é obrigatório';
+        return;
+      }
+      try {
+        const res = await fetch(`${API_URL}/categories`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ name: nome })
+        });
+        if (!res.ok) throw new Error('Erro ao adicionar categoria');
+        document.getElementById('nomeCategoria').value = '';
+        document.getElementById('errorCategoria').textContent = '';
+        carregarCategorias();
+      } catch (err) {
+        document.getElementById('errorCategoria').textContent = err.message;
+      }
     });
 
-    carregarCarros();
+    // Adicionar transação
+    document.getElementById('form-transacao').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const descricao = document.getElementById('descricaoTransacao').value.trim();
+      const valor = parseFloat(document.getElementById('valorTransacao').value);
+      const tipo = document.getElementById('tipoTransacao').value;
+      const categoriaId = parseInt(document.getElementById('categoriaTransacao').value);
+
+      if (!descricao || isNaN(valor) || isNaN(categoriaId)) {
+        document.getElementById('errorTransacao').textContent = 'Preencha todos os campos corretamente';
+        return;
+      }
+      try {
+        const res = await fetch(`${API_URL}/transactions`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            title: descricao,
+            amount: valor,
+            type: tipo,
+            categoryId: categoriaId
+          })
+        });
+        if (!res.ok) throw new Error('Erro ao adicionar transação');
+        document.getElementById('descricaoTransacao').value = '';
+        document.getElementById('valorTransacao').value = '';
+        document.getElementById('errorTransacao').textContent = '';
+        carregarTransacoes();
+      } catch (err) {
+        document.getElementById('errorTransacao').textContent = err.message;
+      }
+    });
+
+    carregarCategorias();
+    carregarTransacoes();
   </script>
 </body>
 </html>

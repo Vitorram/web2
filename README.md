@@ -1,37 +1,35 @@
-# API de Usuários e Carros
+Sistema de controle financeiro com API REST em Node.js + Express + Prisma (MySQL) e frontend em HTML, CSS e JavaScript puro.
 
-## Sobre
+Funcionalidades
 
-API REST para gerenciar usuários e os carros que eles podem comprar, feita em Node.js com Express, MySQL e Prisma ORM.
+✅ Cadastro de categorias (ex: Alimentação, Transporte, Lazer)
 
----
+✅ Cadastro de transações financeiras (entrada ou saída)
 
-## Funcionalidades
+✅ Listagem de transações com descrição, valor e categoria
 
-- CRUD de Usuários
-- CRUD de Carros vinculados a usuários
-- Validação básica dos dados
-- Relacionamento entre usuários e carros
+✅ Cálculo automático do saldo total
 
----
+✅ Dashboard com visual moderno e intuitivo
 
-## Tecnologias usadas
+Tecnologias Utilizadas
+Backend:
+Node.js
 
-- Node.js
-- Express
-- Prisma ORM
-- MySQL
-- dotenv
+Express
 
----
+Prisma ORM
 
-## Como rodar o projeto
+MySQL
 
-### 1. Clone o repositório
+dotenv
 
-```bash
-git clone https://github.com/Vitorram/web2.git
-cd web2
+CORS
 
+Frontend:
+HTML5
 
+CSS3
+
+JavaScript puro (fetch API)
 

@@ -3,22 +3,22 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mysql" // ou "postgresql", "sqlite" etc.
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id     Int     @id @default(autoincrement())
-  nome   String
-  email  String  @unique
-  carros Carro[]
+model Category {
+  id           Int           @id @default(autoincrement())
+  name         String
+  transactions Transaction[]
 }
 
-model Carro {
-  id        Int     @id @default(autoincrement())
-  modelo    String
-  preco     Float
-  ano       Int
-  usuarioId Int
-  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+model Transaction {
+  id         Int      @id @default(autoincrement())
+  title      String
+  amount     Float
+  type       String   
+  createdAt  DateTime @default(now())
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
 }
