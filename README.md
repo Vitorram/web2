@@ -1,35 +1,23 @@
-Sistema de controle financeiro com API REST em Node.js + Express + Prisma (MySQL) e frontend em HTML, CSS e JavaScript puro.
+ DASHBOARD FINANCEIRA
+Projeto com finalidade educativa, desenvolvido para praticar a criação de uma API RESTful utilizando Node.js, Express, Prisma ORM e banco de dados MySQL, com interface em HTML, CSS e JavaScript Puro.
 
-Funcionalidades
+Este sistema permite o controle de categorias e transações financeiras (entradas e saídas), exibindo o saldo final com base nas movimentações.
 
-✅ Cadastro de categorias (ex: Alimentação, Transporte, Lazer)
+ Acesse o projeto
+Em ambiente local:
+Frontend: index.html
+Backend: http://localhost:3000 (após rodar o servidor)
 
-✅ Cadastro de transações financeiras (entrada ou saída)
+ Tecnologias Utilizadas
+<p align="center"> <img src="https://img.icons8.com/?size=100&id=hsPbhkOH4FMe&format=png&color=000000" alt="Node.js" width="55" height="55"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="https://img.icons8.com/?size=100&id=UFXRpPFebwa2&format=png&color=000000" alt="MySQL" width="55" height="55"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="https://img.icons8.com/?size=100&id=aqb9SdV9P8oC&format=png&color=000000" alt="Prisma" width="55" height="55"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="https://img.icons8.com/?size=100&id=20909&format=png&color=000000" alt="HTML" width="55" height="55"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="https://img.icons8.com/?size=100&id=21278&format=png&color=000000" alt="CSS" width="55" height="55"/> </p>
+Node.js · Express · MySQL · Prisma ORM · HTML · CSS · JS
 
-✅ Listagem de transações com descrição, valor e categoria
+✅ Funcionalidades
 
-✅ Cálculo automático do saldo total
+Criar, listar e excluir categorias financeiras.
 
-✅ Dashboard com visual moderno e intuitivo
+Criar, listar e excluir transações vinculadas a categorias.
 
-Tecnologias Utilizadas
-Backend:
-Node.js
+Visualizar saldo total atualizado com base nas transações.
 
-Express
-
-Prisma ORM
-
-MySQL
-
-dotenv
-
-CORS
-
-Frontend:
-HTML5
-
-CSS3
-
-JavaScript puro (fetch API)
-
+Interface simples e funcional com validação básica.
