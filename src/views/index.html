@@ -4,172 +4,336 @@
   <meta charset="UTF-8" />
   <title>Dashboard Financeiro</title>
   <style>
+    :root {
+      --sidebar-bg: #1e3a8a;
+      --sidebar-text: #ffffff;
+      --main-bg: #f2f5f9;
+      --card-bg: #ffffff;
+      --card-shadow: rgba(0, 0, 0, 0.05);
+      --text-dark: #1f2937;
+      --text-light: #475569;
+      --accent-blue: #2563eb;
+      --accent-blue-hover: #1e3a8a;
+      --input-bg: #f1f5f9;
+      --border-color: #cbd5e1;
+      --income-green: #10b981;
+      --expense-red: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f0f2f5;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      height: 100vh;
+      background: var(--main-bg);
+      color: var(--text-dark);
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
+
+    .sidebar {
+      width: 220px;
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem;
     }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 20px;
+    .sidebar h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+    .sidebar p {
+      font-size: 0.75rem;
+      color: #d1d5db;
+      margin-bottom: 1.5rem;
+    }
+    .sidebar nav {
+      width: 100%;
+    }
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      color: var(--sidebar-text);
+      padding: 0.6rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .sidebar nav a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar nav a svg {
+      margin-right: 0.6rem;
+      fill: var(--sidebar-text);
+      width: 18px;
+      height: 18px;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      background: var(--main-bg);
+    }
+    .main header {
+      padding: 1.5rem 2rem;
+      background: var(--card-bg);
+      box-shadow: 0 2px 8px var(--card-shadow);
+    }
+    .main header h1 {
+      font-size: 1.4rem;
+      color: var(--text-dark);
+    }
+
+    .content {
+      padding: 1.5rem 2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .summary {
+      display: flex;
+      gap: 1rem;
+    }
+    .summary .card {
+      flex: 1;
+      background: var(--card-bg);
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px var(--card-shadow);
+      padding: 1rem 1.25rem;
+      text-align: center;
     }
+    .summary .card h3 {
+      font-size: 1rem;
+      color: var(--text-light);
+      margin-bottom: 0.4rem;
+    }
+    .summary .card p {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0;
+      color: var(--accent-blue);
+    }
+
     section {
-      margin-bottom: 40px;
+      background: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px var(--card-shadow);
+      padding: 1.5rem;
     }
-    h2 {
-      margin-bottom: 15px;
-      color: #333;
+    section h2 {
+      font-size: 1.1rem;
+      border-bottom: 2px solid var(--accent-blue);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-dark);
     }
+
     ul {
       list-style: none;
       padding-left: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
     }
-    li {
-      background: #e7e9ee;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 4px;
+    ul li {
+      background: #e0f2fe;
+      color: var(--text-dark);
+      padding: 0.6rem 0.8rem;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
     }
+
     form {
-      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
     }
-    label {
-      display: block;
-      margin-top: 10px;
+    form label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-light);
     }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
+    form input,
+    form select {
+      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--input-bg);
+      color: var(--text-dark);
+      font-size: 0.9rem;
     }
-    button {
-      margin-top: 15px;
-      padding: 10px 15px;
-      background-color: #007bff;
-      color: white;
+    form button {
+      align-self: flex-start;
+      padding: 0.6rem 1.2rem;
+      background: var(--accent-blue);
+      color: #fff;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: bold;
       cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 0.5rem;
     }
-    button:hover {
-      background-color: #0056b3;
+    form button:hover {
+      background: var(--accent-blue-hover);
     }
     .error {
-      color: red;
-      margin-top: 10px;
+      color: var(--expense-red);
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
+    ul::-webkit-scrollbar {
+      width: 8px;
+    }
+    ul::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ul::-webkit-scrollbar-track {
+      background: transparent;
     }
   </style>
 </head>
 <body>
+  <aside class="sidebar">
+    <h2>Vitor R.</h2>
+    <nav>
+      <a href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 3l8 8h-5v7h-6v-7H4z"/>
+        </svg>
+        Dashboard
+      </a>
+      <a href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2zM6 4v16h12V9.5H9.5V4H6z"/>
+        </svg>
+        Relatórios
+      </a>
+    </nav>
+  </aside>
 
-  <h1>Dashboard Financeiro</h1>
-  <div class="container">
+  <div class="main">
+    <header>
+      <h1>Dashboard Financeiro</h1>
+    </header>
 
-    <!-- Seção Categorias -->
-    <section id="categories-section">
-      <h2>Categorias</h2>
-      <ul id="lista-categorias"></ul>
+    <div class="content">
+      <div class="summary">
+        <div class="card" id="card-income">
+          <h3>Total Entrada</h3>
+          <p id="total-income">R$ 0,00</p>
+        </div>
+        <div class="card" id="card-expense">
+          <h3>Total Saída</h3>
+          <p id="total-expense">R$ 0,00</p>
+        </div>
+      </div>
 
-      <form id="form-categoria">
-        <h3>Adicionar Categoria</h3>
-        <label for="nomeCategoria">Nome da Categoria:</label>
-        <input type="text" id="nomeCategoria" name="nomeCategoria" required />
-        <button type="submit">Adicionar</button>
-        <div class="error" id="errorCategoria"></div>
-      </form>
-    </section>
+      <section id="categories-section">
+        <h2>Categorias</h2>
+        <ul id="lista-categorias"></ul>
+        <form id="form-categoria">
+          <label for="nomeCategoria">Nova Categoria:</label>
+          <input type="text" id="nomeCategoria" name="nomeCategoria" placeholder="Ex: Alimentação" required />
+          <button type="submit">Adicionar Categoria</button>
+          <div class="error" id="errorCategoria"></div>
+        </form>
+      </section>
 
-    <!-- Seção Transações -->
-    <section id="transactions-section">
-      <h2>Transações</h2>
-      <ul id="lista-transacoes"></ul>
+      <section id="transactions-section">
+        <h2>Transações</h2>
+        <ul id="lista-transacoes"></ul>
+        <form id="form-transacao">
+          <label for="descricaoTransacao">Descrição:</label>
+          <input type="text" id="descricaoTransacao" name="descricaoTransacao" placeholder="Ex: Mercado" required />
 
-      <form id="form-transacao">
-        <h3>Adicionar Transação</h3>
-        <label for="descricaoTransacao">Descrição:</label>
-        <input type="text" id="descricaoTransacao" name="descricaoTransacao" required />
+          <label for="valorTransacao">Valor:</label>
+          <input type="number" step="0.01" id="valorTransacao" name="valorTransacao" placeholder="0.00" required />
 
-        <label for="valorTransacao">Valor:</label>
-        <input type="number" step="0.01" id="valorTransacao" name="valorTransacao" required />
+          <label for="tipoTransacao">Tipo:</label>
+          <select id="tipoTransacao" name="tipoTransacao" required>
+            <option value="income">Entrada</option>
+            <option value="expense">Saída</option>
+          </select>
 
-        <label for="tipoTransacao">Tipo:</label>
-        <select id="tipoTransacao" name="tipoTransacao" required>
-          <option value="income">Entrada</option>
-          <option value="expense">Saída</option>
-        </select>
+          <label for="categoriaTransacao">Categoria:</label>
+          <select id="categoriaTransacao" name="categoriaTransacao" required></select>
 
-        <label for="categoriaTransacao">Categoria:</label>
-        <select id="categoriaTransacao" name="categoriaTransacao" required></select>
-
-        <button type="submit">Adicionar</button>
-        <div class="error" id="errorTransacao"></div>
-      </form>
-    </section>
-
+          <button type="submit">Adicionar Transação</button>
+          <div class="error" id="errorTransacao"></div>
+        </form>
+      </section>
+    </div>
   </div>
 
   <script>
     const API_URL = 'http://localhost:3000';
 
-    // Função para carregar categorias da API
+    function formatarMoeda(valor) {
+      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
     async function carregarCategorias() {
       try {
         const res = await fetch(`${API_URL}/categories`);
         if (!res.ok) throw new Error('Erro ao buscar categorias');
         const categorias = await res.json();
-
-        const lista = document.getElementById('lista-categorias');
-        lista.innerHTML = '';
+        const listaCats = document.getElementById('lista-categorias');
+        listaCats.innerHTML = '';
+        const selectCat = document.getElementById('categoriaTransacao');
+        selectCat.innerHTML = '';
         categorias.forEach(cat => {
           const li = document.createElement('li');
           li.textContent = `${cat.id} - ${cat.name}`;
-          lista.appendChild(li);
-        });
-
-        const select = document.getElementById('categoriaTransacao');
-        select.innerHTML = '';
-        categorias.forEach(cat => {
+          listaCats.appendChild(li);
           const option = document.createElement('option');
           option.value = cat.id;
           option.textContent = cat.name;
-          select.appendChild(option);
+          selectCat.appendChild(option);
         });
       } catch (err) {
         document.getElementById('errorCategoria').textContent = err.message;
       }
     }
 
-    // Função para carregar transações da API
     async function carregarTransacoes() {
       try {
         const res = await fetch(`${API_URL}/transactions`);
         if (!res.ok) throw new Error('Erro ao buscar transações');
         const transacoes = await res.json();
-
-        const lista = document.getElementById('lista-transacoes');
-        lista.innerHTML = '';
+        const listaTx = document.getElementById('lista-transacoes');
+        listaTx.innerHTML = '';
+        let totalIncome = 0;
+        let totalExpense = 0;
         transacoes.forEach(tx => {
           const li = document.createElement('li');
-          li.textContent = `ID: ${tx.id} | ${tx.title} - R$${tx.amount.toFixed(2)} | Tipo: ${tx.type} | Categoria ID: ${tx.categoryId}`;
-          lista.appendChild(li);
+          li.textContent = `ID: ${tx.id} | ${tx.title} - ${formatarMoeda(tx.amount)} | Tipo: ${tx.type} | Categoria ID: ${tx.categoryId}`;
+          listaTx.appendChild(li);
+          if (tx.type === 'income') totalIncome += tx.amount;
+          if (tx.type === 'expense') totalExpense += tx.amount;
         });
+        document.getElementById('total-income').textContent = formatarMoeda(totalIncome);
+        document.getElementById('total-expense').textContent = formatarMoeda(totalExpense);
       } catch (err) {
         document.getElementById('errorTransacao').textContent = err.message;
       }
     }
 
-    // Adicionar categoria
     document.getElementById('form-categoria').addEventListener('submit', async (e) => {
       e.preventDefault();
       const nome = document.getElementById('nomeCategoria').value.trim();
@@ -180,7 +344,7 @@
       try {
         const res = await fetch(`${API_URL}/categories`, {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: nome })
         });
         if (!res.ok) throw new Error('Erro ao adicionar categoria');
@@ -192,14 +356,12 @@
       }
     });
 
-    // Adicionar transação
     document.getElementById('form-transacao').addEventListener('submit', async (e) => {
       e.preventDefault();
       const descricao = document.getElementById('descricaoTransacao').value.trim();
       const valor = parseFloat(document.getElementById('valorTransacao').value);
       const tipo = document.getElementById('tipoTransacao').value;
       const categoriaId = parseInt(document.getElementById('categoriaTransacao').value);
-
       if (!descricao || isNaN(valor) || isNaN(categoriaId)) {
         document.getElementById('errorTransacao').textContent = 'Preencha todos os campos corretamente';
         return;
@@ -207,13 +369,8 @@
       try {
         const res = await fetch(`${API_URL}/transactions`, {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            title: descricao,
-            amount: valor,
-            type: tipo,
-            categoryId: categoriaId
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: descricao, amount: valor, type: tipo, categoryId: categoriaId })
         });
         if (!res.ok) throw new Error('Erro ao adicionar transação');
         document.getElementById('descricaoTransacao').value = '';
