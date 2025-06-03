@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { parse } from 'dotenv';
 const prisma = new PrismaClient();
-const { z } = require("zod");
+import { z } from 'zod'
 
 const categorySchema = z.object({
   name: z.string().min(1, "Nome da categoria é obrigatorio")

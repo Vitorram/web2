@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-const { z } = require("zod");
+import { z } from 'zod'
  
 const transactionSchema = z.object({
   title: z.string().min(1, "titulo é obrigatório"),
