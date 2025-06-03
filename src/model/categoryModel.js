@@ -1,14 +1,31 @@
 import { PrismaClient } from '@prisma/client';
+import { parse } from 'dotenv';
 const prisma = new PrismaClient();
+const { z } = require("zod");
+
+const categorySchema = z.object({
+  name: z.string().min(1, "Nome da categoria é obrigatorio")
+})
 
 export async function create(data) {
-  return await prisma.category.create({ data });
+  const parsed = categorySchema.safeParse(data);
+  if(!parsed.success){
+    throw parsed.error;
+  }
+
+  return await prisma.category.create({ data: parsed.data });
 }
 
+
 export async function update(id, data) {
+  const parsed = categorySchema.safeParse(data);
+  if(!parsed.success){
+    throw parsed.error;
+  }
+
   return await prisma.category.update({
     where: { id },
-    data
+    data: parsed.data
   });
 }
 
