@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { parse } from 'dotenv';
 const prisma = new PrismaClient();
 import { z } from 'zod'
 

@@ -308,130 +308,101 @@
     }
 
     async function carregarCategorias() {
-      try {
-        const res = await fetch(`${API_URL}/categories`);
-        if (!res.ok) throw new Error('Erro ao buscar categorias');
-        const categorias = await res.json();
-        const listaCats = document.getElementById('lista-categorias');
-        listaCats.innerHTML = '';
-        const selectCat = document.getElementById('categoriaTransacao');
-        selectCat.innerHTML = '';
-        categorias.forEach(cat => {
-          const li = document.createElement('li');
-          li.textContent = `${cat.id} - ${cat.name}`;
-          listaCats.appendChild(li);
-          const option = document.createElement('option');
-          option.value = cat.id;
-          option.textContent = cat.name;
-          selectCat.appendChild(option);
-        });
-      } catch (err) {
-        document.getElementById('errorCategoria').textContent = err.message;
-      }
+    const res = await fetch(`${API_URL}/categories`);
+    const categorias = await res.json();
+    const listaCats = document.getElementById('lista-categorias');
+    listaCats.innerHTML = '';
+    const selectCat = document.getElementById('categoriaTransacao');
+    selectCat.innerHTML = '';
+    categorias.forEach(cat => {
+    const li = document.createElement('li');
+    li.textContent = `${cat.id} - ${cat.name}`;
+    listaCats.appendChild(li);
+    const option = document.createElement('option');
+    option.value = cat.id;
+    option.textContent = cat.name;
+    selectCat.appendChild(option);
+  });
+}
+
+async function carregarTransacoes() {
+  const res = await fetch(`${API_URL}/transactions`);
+  const transacoes = await res.json();
+  const listaTx = document.getElementById('lista-transacoes');
+  listaTx.innerHTML = '';
+  let totalIncome = 0;
+  let totalExpense = 0;
+  window._transactionsCache = transacoes;
+  transacoes.forEach(tx => {
+    const li = document.createElement('li');
+    li.textContent = `ID: ${tx.id} | ${tx.title} - ${formatarMoeda(tx.amount)} | Tipo: ${tx.type} | Categoria ID: ${tx.categoryId}`;
+    listaTx.appendChild(li);
+    if (tx.type === 'income') totalIncome += tx.amount;
+    if (tx.type === 'expense') totalExpense += tx.amount;
+  });
+  document.getElementById('total-income').textContent = formatarMoeda(totalIncome);
+  document.getElementById('total-expense').textContent = formatarMoeda(totalExpense);
+}
+
+document.getElementById('form-categoria').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const nome = document.getElementById('nomeCategoria').value.trim();
+  await fetch(`${API_URL}/categories`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: nome })
+  });
+  document.getElementById('nomeCategoria').value = '';
+  carregarCategorias();
+});
+
+document.getElementById('form-transacao').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const descricao = document.getElementById('descricaoTransacao').value.trim();
+  const valor = parseFloat(document.getElementById('valorTransacao').value);
+  const tipo = document.getElementById('tipoTransacao').value;
+  const categoriaId = parseInt(document.getElementById('categoriaTransacao').value);
+  await fetch(`${API_URL}/transactions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title: descricao, amount: valor, type: tipo, categoryId: categoriaId })
+  });
+  document.getElementById('descricaoTransacao').value = '';
+  document.getElementById('valorTransacao').value = '';
+  carregarTransacoes();
+});
+
+document.getElementById('btn-relatorio').addEventListener('click', () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const transacoes = window._transactionsCache || [];
+  const marginLeft = 20;
+  let cursorY = 20;
+
+  doc.setFontSize(16);
+  doc.text('Relatório de Transações', marginLeft, cursorY);
+  cursorY += 10;
+
+  doc.setFontSize(10);
+  doc.text('ID | Descrição | Valor | Tipo | CategoriaID', marginLeft, cursorY);
+  cursorY += 6;
+
+  transacoes.forEach((tx) => {
+    if (cursorY > 280) {
+      doc.addPage();
+      cursorY = 20;
     }
+    const line = `${tx.id} | ${tx.title} | ${formatarMoeda(tx.amount)} | ${tx.type} | ${tx.categoryId}`;
+    doc.text(line, marginLeft, cursorY);
+    cursorY += 6;
+  });
 
-    async function carregarTransacoes() {
-      try {
-        const res = await fetch(`${API_URL}/transactions`);
-        if (!res.ok) throw new Error('Erro ao buscar transações');
-        const transacoes = await res.json();
-        const listaTx = document.getElementById('lista-transacoes');
-        listaTx.innerHTML = '';
-        let totalIncome = 0;
-        let totalExpense = 0;
-        window._transactionsCache = transacoes; 
-        transacoes.forEach(tx => {
-          const li = document.createElement('li');
-          li.textContent = `ID: ${tx.id} | ${tx.title} - ${formatarMoeda(tx.amount)} | Tipo: ${tx.type} | Categoria ID: ${tx.categoryId}`;
-          listaTx.appendChild(li);
-          if (tx.type === 'income') totalIncome += tx.amount;
-          if (tx.type === 'expense') totalExpense += tx.amount;
-        });
-        document.getElementById('total-income').textContent = formatarMoeda(totalIncome);
-        document.getElementById('total-expense').textContent = formatarMoeda(totalExpense);
-      } catch (err) {
-        document.getElementById('errorTransacao').textContent = err.message;
-      }
-    }
+  doc.save('relatorio-transacoes.pdf');
+});
 
-    document.getElementById('form-categoria').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const nome = document.getElementById('nomeCategoria').value.trim();
-      if (!nome) {
-        document.getElementById('errorCategoria').textContent = 'Nome da categoria é obrigatório';
-        return;
-      }
-      try {
-        const res = await fetch(`${API_URL}/categories`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: nome })
-        });
-        if (!res.ok) throw new Error('Erro ao adicionar categoria');
-        document.getElementById('nomeCategoria').value = '';
-        document.getElementById('errorCategoria').textContent = '';
-        carregarCategorias();
-      } catch (err) {
-        document.getElementById('errorCategoria').textContent = err.message;
-      }
-    });
+carregarCategorias();
+carregarTransacoes();
 
-    document.getElementById('form-transacao').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const descricao = document.getElementById('descricaoTransacao').value.trim();
-      const valor = parseFloat(document.getElementById('valorTransacao').value);
-      const tipo = document.getElementById('tipoTransacao').value;
-      const categoriaId = parseInt(document.getElementById('categoriaTransacao').value);
-      if (!descricao || isNaN(valor) || isNaN(categoriaId)) {
-        document.getElementById('errorTransacao').textContent = 'Preencha todos os campos corretamente';
-        return;
-      }
-      try {
-        const res = await fetch(`${API_URL}/transactions`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: descricao, amount: valor, type: tipo, categoryId: categoriaId })
-        });
-        if (!res.ok) throw new Error('Erro ao adicionar transação');
-        document.getElementById('descricaoTransacao').value = '';
-        document.getElementById('valorTransacao').value = '';
-        document.getElementById('errorTransacao').textContent = '';
-        carregarTransacoes();
-      } catch (err) {
-        document.getElementById('errorTransacao').textContent = err.message;
-      }
-    });
-
-    document.getElementById('btn-relatorio').addEventListener('click', () => {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const transacoes = window._transactionsCache || [];
-      const marginLeft = 20;
-      let cursorY = 20;
-
-      doc.setFontSize(16);
-      doc.text('Relatório de Transações', marginLeft, cursorY);
-      cursorY += 10;
-
-      doc.setFontSize(10);
-      doc.text('ID | Descrição | Valor | Tipo | CategoriaID', marginLeft, cursorY);
-      cursorY += 6;
-
-      transacoes.forEach((tx, index) => {
-        if (cursorY > 280) {
-          doc.addPage();
-          cursorY = 20;
-        }
-        const line = `${tx.id} | ${tx.title} | ${formatarMoeda(tx.amount)} | ${tx.type} | ${tx.categoryId}`;
-        doc.text(line, marginLeft, cursorY);
-        cursorY += 6;
-      });
-
-      doc.save('relatorio-transacoes.pdf');
-    });
-
-    carregarCategorias();
-    carregarTransacoes();
   </script>
 </body>
 </html>
