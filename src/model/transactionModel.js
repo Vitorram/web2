@@ -14,10 +14,10 @@ const transactionSchema = z.object({
     invalid_type_error: "O valor deve ser numérico."
   }).positive("O valor deve ser positivo."),
 
-  categoryId: z.string({
-    required_error: "O ID da categoria é obrigatório.",
-    invalid_type_error: "O ID da categoria deve ser um UUID."
-  }).uuid("ID de categoria inválido."),
+ categoryId: z.number({
+  required_error: "O ID da categoria é obrigatório.",
+  invalid_type_error: "O ID da categoria deve ser um número."
+}),
 
   type: z.enum(['income', 'expense'], {
     required_error: "O tipo é obrigatório.",

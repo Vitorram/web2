@@ -4,7 +4,7 @@ import cors from 'cors';
 import categoryRoutes from './routes/categoryRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import { logger } from './middlewares/logger.js';          
-import { errorHandler } from './middlewares/errorHandler.js';
+import { errorHandler } from './middlewares/errorsHandler.js';
 
 dotenv.config();
 
